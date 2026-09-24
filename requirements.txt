@@ -1,0 +1,15 @@
+# Core analysis - everything degrades gracefully if a package is missing.
+pefile>=2023.2.7          # PE parsing
+yara-python>=4.3.0        # signature matching
+oletools>=0.60            # VBA macro extraction from legacy Office
+python-magic>=0.4.27      # nicer file type labels (needs libmagic)
+requests>=2.31            # sandbox APIs, only needed for --dynamic
+
+# Optional extras
+# ssdeep                  # fuzzy hashing (needs libfuzzy-dev)
+# py-tlsh                 # TLSH hashing
+# weasyprint              # --format pdf
+
+# GUI
+# tkinterdnd2             # drag and drop onto the window (tkinter itself ships with Python)
+# pyinstaller             # build a .app / .exe
