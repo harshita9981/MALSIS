@@ -1,4 +1,4 @@
-# malysis
+# malsis
 
 File triage for SOC work: static analysis first, optional sandbox detonation second,
 one self-contained report at the end.
@@ -19,11 +19,11 @@ means no signature matching, and so on.
 ## Use
 
 ```
-python3 -m malysis sample.exe
-python3 -m malysis invoice.pdf -f html -o /cases/1234/invoice.html
-python3 -m malysis dropper.ps1 -f json | jq .findings
-python3 -m malysis sample.exe --dynamic cape --sandbox-url https://cape.internal --api-key $CAPE_TOKEN
-python3 -m malysis sample.exe --dynamic vt --api-key $VT_KEY
+python3 -m malsis sample.exe
+python3 -m malsis invoice.pdf -f html -o /cases/1234/invoice.html
+python3 -m malsis dropper.ps1 -f json | jq .findings
+python3 -m malsis sample.exe --dynamic cape --sandbox-url https://cape.internal --api-key $CAPE_TOKEN
+python3 -m malsis sample.exe --dynamic vt --api-key $VT_KEY
 ```
 
 Formats: `html` (default), `txt`, `json`, `pdf`. HTML is one file with no external
@@ -33,9 +33,9 @@ document for attaching to a ticket. Native `pdf` needs `weasyprint`.
 ## Desktop interface
 
 ```
-python3 -m malysis            # no arguments opens the GUI
+python3 -m malsis            # no arguments opens the GUI
 python3 run_gui.py            # same thing
-python3 -m malysis --gui
+python3 -m malsis --gui
 ```
 
 Tkinter, which ships with Python on macOS and Windows, so there is nothing extra to
@@ -43,13 +43,13 @@ install. Add files (or drag them on, if `tkinterdnd2` is installed), set the opt
 once, and analyse. Each sample gets a row with its type, verdict and score; double-click
 a row to open its report. Settings persist between runs in:
 
-- macOS `~/Library/Application Support/malysis/settings.json`
-- Windows `%APPDATA%\malysis\settings.json`
-- Linux `~/.config/malysis/settings.json`
+- macOS `~/Library/Application Support/malsis/settings.json`
+- Windows `%APPDATA%\malsis\settings.json`
+- Linux `~/.config/malsis/settings.json`
 
 The API key is only written to that file if you tick "Remember", and it is stored in
 plain text (mode 0600 on macOS and Linux). Leaving it unticked means the field is
-populated from `MALYSIS_API_KEY` each time, which is the better habit.
+populated from `malsis_API_KEY` each time, which is the better habit.
 
 Analysis runs on a worker thread, so the window stays responsive through a long sandbox
 wait. A sandbox failure marks that row and still writes the static report.
@@ -60,17 +60,17 @@ wait. A sandbox failure marks that row and still writes the static report.
 pip install pyinstaller
 
 # macOS / Linux
-pyinstaller --windowed --noconfirm --name malysis \
-  --add-data "malysis/rules:malysis/rules" run_gui.py
+pyinstaller --windowed --noconfirm --name malsis \
+  --add-data "malsis/rules:malsis/rules" run_gui.py
 
 # Windows
-pyinstaller --windowed --noconfirm --name malysis ^
-  --add-data "malysis\rules;malysis\rules" run_gui.py
+pyinstaller --windowed --noconfirm --name malsis ^
+  --add-data "malsis\rules;malsis\rules" run_gui.py
 ```
 
 Output lands in `dist/`. Build on the platform you are targeting; PyInstaller does not
 cross-compile. On macOS the unsigned `.app` needs a right-click > Open the first time, or
-`xattr -dr com.apple.quarantine dist/malysis.app`. If you bundle `yara-python`, check the
+`xattr -dr com.apple.quarantine dist/malsis.app`. If you bundle `yara-python`, check the
 compiled rules load in the frozen build before you hand it to anyone.
 
 ## What it looks at
@@ -99,7 +99,7 @@ targets (remote template injection), embedded objects and DDEAUTO fields.
 
 **Scripts and text** — encoded PowerShell, IEX, download cradles, LOLBin references.
 
-**YARA** — every `.yar` in `malysis/rules` (override with `--rules`). A starter set ships
+**YARA** — every `.yar` in `malsis/rules` (override with `--rules`). A starter set ships
 with the tool; drop your own rules in the same directory and they compile automatically.
 Rule `meta.severity` feeds the score.
 
@@ -118,7 +118,7 @@ own corpus, the defaults are a starting point rather than a calibrated model.
 | Hatching Triage | `--dynamic triage` | `--api-key` (URL defaults to tria.ge) |
 | VirusTotal | `--dynamic vt` | `--api-key`; reads existing detections and behaviour. Add `--vt-upload` to submit unknown samples |
 
-Env vars `MALYSIS_SANDBOX_URL` and `MALYSIS_API_KEY` work instead of the flags.
+Env vars `malsis_SANDBOX_URL` and `malsis_API_KEY` work instead of the flags.
 Use `--insecure` for a self-signed CAPE. A failed sandbox run never loses the static
 report; the error is recorded in the dynamic section.
 
